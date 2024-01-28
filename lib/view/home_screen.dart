@@ -13,29 +13,35 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Counter> _counters = [];
+  final List<Counter> _counters = [];
   final TextEditingController _titleController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    loadData(_counters);
+    loadDataAndUpdateState();
+  }
+
+  void loadDataAndUpdateState() async {
+    await loadData(_counters);
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Counter App'),
+        title: const Text('Counter App'),
       ),
       body: _counters.isEmpty
-          ? Center(child: Text("Add your custom counters"))
+          ? const Center(child: Text("Add your custom counters"))
           : ListView.builder(
-        itemCount: _counters.length,
-        itemBuilder: (context, index) {
-          return _buildCounter(_counters[index]);
-        },
-      ),
+              itemCount: _counters.length,
+              itemBuilder: (context, index) {
+                Color randomColor = generateRandomColor(index);
+                return _buildCounter(_counters[index], randomColor);
+              },
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           AwesomeDialog(
@@ -48,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
               child: Column(
                 children: [
-                  Text(
+                  const Text(
                     "Add Counter",
                     style: TextStyle(
                       color: Colors.white,
@@ -58,8 +64,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   TextField(
                     controller: _titleController,
-                    style: TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
+                    style: const TextStyle(color: Colors.white),
+                    decoration: const InputDecoration(
                       hintText: 'Title',
                       hintStyle: TextStyle(
                         color: Colors.white70,
@@ -77,26 +83,24 @@ class _HomeScreenState extends State<HomeScreen> {
               setState(() {});
             },
             width: MediaQuery.of(context).size.width * 0.9,
-          )..show();
+          ).show();
         },
         tooltip: 'Add',
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
 
-  Widget _buildCounter(Counter counter) {
-    Color randomColor = generateRandomColor();
-
+  Widget _buildCounter(Counter counter, randomColor) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           counter.title,
-          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 5),
+        const SizedBox(height: 5),
         Container(
           height: 60,
           decoration: BoxDecoration(
@@ -109,8 +113,10 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => CounterDetailScreen(counter: counter, randomColor: randomColor, counters: _counters)
-                ),
+                    builder: (context) => CounterDetailScreen(
+                        counter: counter,
+                        randomColor: randomColor,
+                        counters: _counters)),
               ).then((_) {
                 setState(() {});
               });
@@ -123,11 +129,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   width: 60,
                   decoration: BoxDecoration(
                       color: randomColor,
-                      borderRadius: BorderRadius.only(
+                      borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(20),
                           bottomLeft: Radius.circular(20))),
                   child: IconButton(
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.add,
                       size: 35,
                       color: Colors.white,
@@ -142,19 +148,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Text(
                   counter.count.toString(),
-                  style: TextStyle(fontSize: 22,
-                  fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 22, fontWeight: FontWeight.bold),
                 ),
                 Container(
                   height: 60,
                   width: 60,
                   decoration: BoxDecoration(
                       color: randomColor,
-                      borderRadius: BorderRadius.only(
+                      borderRadius: const BorderRadius.only(
                           topRight: Radius.circular(20),
                           bottomRight: Radius.circular(20))),
                   child: IconButton(
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.remove,
                       size: 35,
                       color: Colors.white,
@@ -173,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-        SizedBox(height: 15)
+        const SizedBox(height: 15)
       ],
     );
   }
